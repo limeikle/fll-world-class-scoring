@@ -246,7 +246,7 @@ function initialize() {
               <option value="8">8</option></select>
 </table></tr></table>
 <script>
-  score_items.push(function() { return value('q3')*10 });
+  score_items.push(function() { var loops = value('q3'); return loops>0 ? 10 + loops*10 : 0; });
 </script>
 
 <table class=section_outer><tr>

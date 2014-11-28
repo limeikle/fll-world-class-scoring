@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>FLL 2014 Scoring</title>
+<style>
+
+
+
+body		{background-color: #224468;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  -webkit-font-smoothing: antialiased;
+  padding-top: 36px;
+  color: white;
+		}
+td.full		{padding-right: 20px}
+table.section_outer	{
+		 width: 100%;
+		 margin: 5px;
+		 padding: 3px;
+		 padding-right: 6px;
+		 background-color: #d3d0d8;
+	 	 color: #112234;
+		}
+table.section_inner {
+         width: 100%;
+         margin-left: 8px;
+         text-align: left;
+        }
+td.control	{text-align: right}
+.section_total	{ font-weight: 200; font-style: italic; }
+.mission_total	{ font-weight: 200; font-style: italic; }
+td.label	{}
+div.info-section	{ font-size: 150%;
+		  background-color: #d3d0d8;
+		  color: #224468;
+		  border-color: black;
+		  border-style: solid;
+		  border-width: 1px;
+		  padding: 4px;
+		  margin-top: 18px;
+		}
+div.info-section.highlight {
+	background-color: #a080a8;
+	color: white;
+	font-weight: 700;
+}
+div.score	{ font-size: 200%;
+		  width: 3em;
+		}
+div.info-value	{
+		  background-color: white;
+		  border-color: black;
+		  border-style: solid;
+		  border-width: 1px;
+		  padding: 4px;
+		}
+td.game-img {
+    background-color: white;
+    width: 60px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    box-shadow: 2px 1px 5px #888888;
+    padding-right: 12px;
+}
+td.game-img img {
+  width: 60px; 
+} 
+</style>
+<script>
+function yes(id) {
+	return document.getElementById(id).checked;
+}
+
+function value(id) {
+	var sel = document.getElementById(id);
+	return sel.options[sel.selectedIndex].value * 1;
+}
+
+function contents(id) {
+	var sel = document.getElementById(id);
+	return sel.innerHTML;
+}
+
+function text_value(id) {
+	var sel = document.getElementById(id);
+	return sel.value;
+}
+
+function escapeHTML( string )
+{
+    var pre = document.createElement('pre');
+    var text = document.createTextNode( string );
+    pre.appendChild(text);
+    return pre.innerHTML;
+}
+
+var score_items = [];
+var missions = 0;
+var score = 0;
+
+function calculate() {
+	score = 0; missions = 0;
+    for (x in score_items) { 
+        var score_for_x = score_items[x]();
+        score += score_for_x; 
+        var xx = x; xx++;
+        var elt = document.getElementById('q'+xx+'s');
+        if (score_for_x) {
+            missions++;
+            if (elt) elt.innerHTML = " &mdash; "+score_for_x+" points";
+        } else {
+            if (elt) elt.innerHTML = "";
+        }
+    }
+	document.getElementById('mission_count').innerHTML = (missions==0 ? "" :
+	   " &mdash; "+missions+" mission"+(missions!=1?"s":""));
+	document.getElementById('score').innerHTML = score;
+}
+
+function save() {
+	document.getElementById('scores_table').innerHTML = 
+		'<tr><td style="text-align: left; padding: 10px;">'+
+		    escapeHTML(text_value('team_name'))+'</td>'+
+		'<td style="text-align: right; padding: 10px;">'+
+			escapeHTML(contents('score'))+'</td></tr>'+
+		document.getElementById('scores_table').innerHTML
+	
+	reset()
+}
+
+function reset() {
+	document.getElementById('team_name').value = '';
+	
+	var els = document.getElementsByTagName('input');
+	for (var i = 0; i < els.length; i++)
+		els[i].checked = els[i].defaultChecked;
+	els = document.getElementsByTagName('select');
+	for (i = 0; i < els.length; i++)
+		els[i].selectedIndex = 0;
+		
+	calculate();
+	
+	document.getElementById('scores_section').style.visibility = 
+		(document.getElementById('scores_table').innerHTML ? 'visible' : 'hidden')
+}
+
+function clear_scores() {
+	document.getElementById('scores_table').innerHTML = ''
+	document.getElementById('scores_section').style.visibility = 
+		(document.getElementById('scores_table').innerHTML ? 'visible' : 'hidden')
+}
+
+function initialize() {
+	var els = document.getElementsByTagName('input');
+	for (var i = 0; i < els.length; i++)
+		els[i].onclick = calculate;
+	els = document.getElementsByTagName('select');
+	for (i = 0; i < els.length; i++)
+		els[i].onchange = calculate;
+	reset();
+}
+</script>
+</head>
+<body onload="initialize();">
+<center>
+<table class=full><tr>
+<td class=full width=40% valign=top>
+	<div style="text-align: center; margin: 15px;">
+		<div><div style="float: left; margin-right: 16px;"><img src="img/logos-organisers-small.png" style="width: 260px;"></div>
+			<div style="text-align: center; font-size: 200%; padding-top: 60px; color: white;"><b>FLL 2014</b><br/><hr/>Score Calculator<br/><br/></div>
+		</div>
+		<!-- <div style="font-size: 200%; padding-top: 0px; color: white;"><i>Score Calculator</i></div> -->
+		
+		<div class="info-section"><table style="width: 100%;"><tr><td style="padding: 10px; padding-right: 20px; text-align: left;">
+			<div>Team</div> 
+			</td><td style="text-align: right; width: 50%;" align="right">
+				<input type="text" class="info-value" style="font-size: 125%; border: 1px solid black; padding: 3px; margin-right: 10px; width: 14em;" id=team_name></input>
+			</td></tr></table>
+		</div>
+		
+		<div class="info-section"><table style="width: 100%;"><tr><td style="width: 50%; padding: 10px; padding-right: 20px; text-align: left;">
+			<div>Score <span id="mission_count" class="mission_total"></span></div> 
+			</td><td style="text-align: right; width: 50%;" align="right">
+				<div class="score info-value" style="float: right; text-align: right; padding-right: 10px; margin-right: 10px;" id=score>0</div>
+			</td></tr></table>
+		</div>
+		<br>
+		<button onclick="save();" style="color: #224468; height: 24px; margin-left: 0.5cm">Save and Reset</button>
+		<button onclick="reset();" style="color: #224468; height: 24px; margin-left: 0.5cm">Reset</button>
+
+		<div id="scores_section">
+			<br>
+			<hr>
+			<div class="info-section highlight">
+				<div><table style="width: 100%;" id="scores_table"></table></div>
+			</div>
+			<br/>
+			<button onclick="clear_scores();" style="color: #224468; height: 24px; margin-left: 0.5cm">Clear</button>
+		</div>
+
+		
+	</div>
+</td>
+
+<td class=full width=30% valign=top>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/ReverseEngineering.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>1. Reverse Engineering <span class="section_total" id="q1s"/>
+  <tr><td class=label>Basket in base?<td class=control><input type=checkbox id=q1a>
+  <tr><td class=label>Model in base and identical?<td class=control><input type=checkbox id=q1b>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q1a') ? 30 + (yes('q1b') ? 15 : 0) : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/OpeningDoors.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>2. Opening Doors <span class="section_total" id="q2s"/>
+  <tr><td class=label>Door opened by pushing handle down?<td class=control><input type=checkbox id=q2>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q2') ? 15 : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/ProjectBasedLearning.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>3. Project Based Learning <span class="section_total" id="q3s"/>
+  <tr><td class=label>Number of loops on scale?
+    <td class=control><select id="q3"><option value=""></option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option></select>
+</table></tr></table>
+<script>
+  score_items.push(function() { return value('q3')*10 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/Apprenticeship.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>4. Apprenticeship <span class="section_total" id="q4s"/>
+  <tr><td class=label>Model in view of referee (with/without people)?<td class=control><input type=checkbox id=q4a>
+  <tr><td class=label>Model touching scale's white circle (with people)?<td class=control><input type=checkbox id=q4b>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q4a') ? 20 + (yes('q4b') ? 15 : 0) : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/SearchEngine.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>5. Search Engine <span class="section_total" id="q5s"/>
+  <tr><td class=label>Color wheel spun at least once (via slider)?<td class=control><input type=checkbox id=q5a>
+  <tr><td class=label>Correct loop (only) removed?<td class=control><input type=checkbox id=q5b>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q5a') ? 15 + (yes('q5b') ? 45 : 0) : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/SportsFootball.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>6. Sports <span class="section_total" id="q6s"/>
+  <tr><td class=label>Ball shot towards net?<td class=control><input type=checkbox id=q6a>
+  <tr><td class=label>Ball touching mat in net?<td class=control><input type=checkbox id=q6b>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q6a') ? 30 + (yes('q6b') ? 30 : 0) : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/RoboticsCompetition.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>7. Robotics Competition <span class="section_total" id="q7s"/>
+  <tr><td class=label>Robotics insert installed?<td class=control><input type=checkbox id=q7a>
+  <tr><td class=label>Loop no longer touching model?<td class=control><input type=checkbox id=q7b>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q7a') ? 25 + (yes('q7b') ? 30 : 0) : 0 });
+</script>
+
+
+<td width=30% class=full valign=top>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/UsingTheRightSenses.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>8. Using the Right Senses <span class="section_total" id="q8s"/>
+  <tr><td class=label>Loop no longer touching model?<td class=control><input type=checkbox id=q8>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q8') ? 40 : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/Remote.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>9. Remote Communications/Learning <span class="section_total" id="q9s"/>
+  <tr><td class=label>Referee saw robot pull the slider west?<td class=control><input type=checkbox id=q9>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q9') ? 40 : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/ThinkingOutside.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>10. Thinking Outside the Box <span class="section_total" id="q10s"/>
+  <tr><td class=label>Idea model not touching box?<td class=control><input type=checkbox id=q10a>
+  <tr><td class=label>Idea model's bulb is facing up?<td class=control><input type=checkbox id=q10b>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q10a') ? 25 + (yes('q10b') ? 15 : 0) : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/CommunityLearning.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>11. Community Learning <span class="section_total" id="q11s"/>
+  <tr><td class=label>Loop no longer touching model?<td class=control><input type=checkbox id=q11>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q11') ? 25 : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/CloudAccess.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>12. Cloud Access <span class="section_total" id="q12s"/>
+  <tr><td class=label>SD Card up due to key insertion?<td class=control><input type=checkbox id=q12>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q12') ? 30 : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/ChangingConditions.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>13. Adapting to Changing Conditions <span class="section_total" id="q13s"/>
+  <tr><td class=label>Model rotated 90 degrees counter-clockwise?<td class=control><input type=checkbox id=q13>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q13') ? 15 : 0 });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/Penalty.png">
+<td><table class=section_inner>
+  <tr><th colspan=2>14. Penalties <span class="section_total" id="q14s"/>
+  <tr><td class=label>Number of penalties?
+    <td class=control><select id="q14"><option value=""></option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option></select>
+</table></tr></table>
+<script>
+  score_items.push(function() { return value('q14')*(-10) });
+</script>
+
+<table class=section_outer><tr>
+  <td class=game-img> <img src="./img/Engagement.png">
+<td><table class=section_inner>
+  <tr><th>15. Engagement <span class="section_total" id="q15s"/>  
+  <tr><td class=label>Yellow handle moved south?
+        <td class=control><input type=checkbox id=q15a>
+    <tr><td class=label>Engagement scale reading?
+    <td class=control><select id="q15b"><option value="0">0</option>0
+      <option value="10">10</option>10<option value="11">11</option>11<option value="12">12</option>12<option value="13">13</option>13<option value="14">14</option>14<option value="15">15</option>15<option value="16">16</option>16<option value="17">17</option>17<option value="18">18</option>18<option value="19">19</option>19<option value="20">20</option>20<option value="21">21</option>21<option value="22">22</option>22<option value="23">23</option>23<option value="24">24</option>24<option value="25">25</option>25<option value="26">26</option>26<option value="27">27</option>27<option value="28">28</option>28<option value="29">29</option>29<option value="30">30</option>30<option value="31">31</option>31<option value="32">32</option>32<option value="33">33</option>33<option value="34">34</option>34<option value="35">35</option>35<option value="36">36</option>36<option value="37">37</option>37<option value="38">38</option>38<option value="39">39</option>39<option value="40">40</option>40<option value="41">41</option>41<option value="42">42</option>42<option value="43">43</option>43<option value="44">44</option>44<option value="45">45</option>45<option value="46">46</option>46<option value="47">47</option>47<option value="48">48</option>48<option value="49">49</option>49<option value="50">50</option>50<option value="51">51</option>51<option value="52">52</option>52<option value="53">53</option>53<option value="54">54</option>54<option value="55">55</option>55<option value="56">56</option>56<option value="57">57</option>57<option value="58">58</option>58</select>
+</table></tr></table>
+<script>
+  score_items.push(function() { return yes('q15a') ? 20 + Math.ceil(value('q15b')*score/100)
+    : 0 });
+</script>
+
+</table>
+
+
+</center>
+
+<!-- uncomment if modifying
+<div style="text-align: right;">
+<i>designed and produced by <a href="lambdajam.org" style="color: white;">Lambda Jam</a></i>
+</div>
+-->
+
+</body>
+</html>
